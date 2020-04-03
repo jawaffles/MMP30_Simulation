@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<launch>
+
+  <rosparam command="load" file="$(find mmp30_control)/config/control.yaml" />
+  
+
+  <node name="base_controller_spawner" pkg="controller_manager" type="spawner" args="mmp30_joint_publisher mmp30_velocity_controller hokuyo_position_controller nod_position_controller --shutdown-timeout 3">
+  </node>
+
+<!-- 
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
+    <rosparam command="load" file="$(find mmp30_control)/config/localization.yaml" />
+    <remap from="imu/data" to="/imu/data"/>
+  </node> -->
+
+
+
+
+  <rosparam command="load" file="$(find mmp30_control)/config/ekf_sim.yaml" />
+  <rosparam command="load" file="$(find mmp30_control)/config/navsat_params.yaml" />
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true"/>
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+  </node>
+
+  <!-- <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+    <remap from="/gps/fix" to="/navsat/fix" />
+  </node> -->
+
+
+ <include file="$(find gps_common)/launch/utm_odometry_sim.launch">
+   
+  </include>
+
+
+  
+  <node pkg="interactive_marker_twist_server" type="marker_server" name="twist_marker_server" output="screen"/>
+
+  <node pkg="twist_mux" type="twist_mux" name="twist_mux">
+    <rosparam command="load" file="$(find mmp30_control)/config/twist_mux.yaml" />
+    <remap from="cmd_vel_out" to="mmp30_velocity_controller/cmd_vel"/>
+  </node>
+
+
+</launch>

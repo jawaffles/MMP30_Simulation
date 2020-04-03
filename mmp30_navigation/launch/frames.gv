@@ -1,0 +1,13 @@
+digraph G {
+"map" -> "odom"[label="Broadcaster: /play_1549483424257921430\nAverage rate: 28.991 Hz\nMost recent transform: 1549409103.934 ( 74410.368 sec old)\nBuffer length: 5.174 sec\n"];
+"odom" -> "base_footprint"[label="Broadcaster: /play_1549483424257921430\nAverage rate: 28.436 Hz\nMost recent transform: 1549409103.959 ( 74410.343 sec old)\nBuffer length: 5.275 sec\n"];
+"base_link" -> "imu_link"[label="Broadcaster: /play_1549483424257921430\nAverage rate: 97.245 Hz\nMost recent transform: 1549409103.923 ( 74410.379 sec old)\nBuffer length: 5.440 sec\n"];
+"base_footprint" -> "base_link"[label="Broadcaster: /play_1549483424257921430\nAverage rate: 96.958 Hz\nMost recent transform: 1549409103.976 ( 74410.327 sec old)\nBuffer length: 5.198 sec\n"];
+"base_link" -> "laser"[label="Broadcaster: /play_1549483424257921430\nAverage rate: 97.486 Hz\nMost recent transform: 1549409103.917 ( 74410.385 sec old)\nBuffer length: 5.201 sec\n"];
+"map" -> "utm"[label="Broadcaster: /play_1549483424257921430\nAverage rate: 39.613 Hz\nMost recent transform: 1549409103.910 ( 74410.392 sec old)\nBuffer length: 5.150 sec\n"];
+"base_link" -> "gps_link"[label="Broadcaster: /play_1549483424257921430\nAverage rate: 97.352 Hz\nMost recent transform: 1549409103.923 ( 74410.379 sec old)\nBuffer length: 5.270 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1549483514.302"[ shape=plaintext ] ;
+ }->"map";
+}

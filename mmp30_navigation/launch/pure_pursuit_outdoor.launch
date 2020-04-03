@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+
+
+
+
+
+
+<launch>
+
+	<include file="$(find pure_pursuit_controller)/launch/nav.launch" />
+	
+	
+	  <!-- <rosparam command="load" file="$(find mmp30_navigation)/config/robot_localization/outdoor/dual_ekf_navsat_example.yaml" /> -->
+  <rosparam command="load" file="$(find mmp30_navigation)/config/robot_localization/outdoor/navsat_params.yaml" />
+
+        <!-- <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true">
+                <remap from="odometry/filtered" to="odometry/continuous" />
+        </node>
+
+        <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true" output="screen">
+                <remap from="odometry/filtered" to="odometry/map"/>
+        </node> -->
+
+
+  
+</launch>
+
+
+

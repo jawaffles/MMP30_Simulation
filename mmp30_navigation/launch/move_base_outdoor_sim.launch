@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+
+
+
+
+
+
+<launch>
+
+
+	<!-- <node pkg="tf" type="static_transform_publisher" name="transform_baselink_to_basefootprint" args="0 0 0 0 0 0 1 base_footprint base_link 10" />
+ -->
+
+  <!--- Run Move Base -->  
+  <include file="$(find mmp30_navigation)/launch/move_base_sim.launch">
+    <arg name="no_static_map" value="true"/>
+  </include>
+
+
+
+
+  <!-- <rosparam command="load" file="$(find mmp30_navigation)/config/robot_localization/outdoor/dual_ekf_navsat_example.yaml" />
+  <rosparam command="load" file="$(find mmp30_navigation)/config/robot_localization/outdoor/navsat_params.yaml" />
+
+        <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true">
+                <remap from="odometry/filtered" to="odometry/continuous" />
+        </node>
+
+        <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true" output="screen">
+                <remap from="odometry/filtered" to="odometry/map"/>
+        </node> -->
+
+        <!-- node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true" output="screen">
+                <remap from="/odometry/filtered" to="/odometry/map"/>
+                <remap from="/gps/fix" to="/fix" />
+                <remap from="/odometry/gps" to="/odometry/gps"/>
+        </node-->
+
+  
+</launch>

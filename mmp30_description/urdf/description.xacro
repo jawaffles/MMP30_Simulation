@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<robot name="mmp30" xmlns:xacro="http://ros.org/wiki/xacro">
+
+
+  <xacro:include filename="$(find mmp30_description)/urdf/mmp30.urdf.xacro" />
+  <xacro:mmp30_robot />
+
+</robot>
