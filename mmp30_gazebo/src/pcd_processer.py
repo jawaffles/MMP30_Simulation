@@ -96,14 +96,14 @@ def callback(point_cloud):
 
     row_output = pcd_row_detection(pcd)
 
-    # heading_err = row_output[0]
-    # row_dist_err = row_output[1] - row_output[2]
-    # print("Heading Error: {}").format(row_output[0])
-    # print("Distance Error: {}").format(row_output[1] - row_output[2])
-    # print("Right row distance: {}").format(row_output[1])
-    # print("Left row distance: {}").format(row_output[2])
+    heading_err = row_output[0]
+    row_dist_err = row_output[1] - row_output[2]
+    print("Heading Error: {}").format(row_output[0])
+    print("Distance Error: {}").format(row_output[1] - row_output[2])
+    print("Right row distance: {}").format(row_output[1])
+    print("Left row distance: {}").format(row_output[2])
     
-    # vel_corr(heading_err,row_dist_err)
+    vel_corr(heading_err,row_dist_err)
 
 
 
