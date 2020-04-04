@@ -91,6 +91,7 @@ def callback(point_cloud):
     print(len(xyz_array))
 
     pcd = o3d.geometry.PointCloud()
+
     
     pcd.points = o3d.utility.Vector3dVector(xyz_array)
 

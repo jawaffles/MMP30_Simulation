@@ -58,7 +58,6 @@ def pcd_row_detection(pcd):
 
                 vol.orthogonal_axis = "Z"
 
-
                 cropped_pcd_r = vol.crop_point_cloud(downpcd)
 
                 vol.bounding_polygon = o3d.utility.Vector3dVector(bounding_polygon_l)
@@ -201,8 +200,8 @@ if __name__ == "__main__":
 
         #PCD Initial Read
         print("Load a ply point cloud, print it, and render it")
-        pcd = o3d.io.read_point_cloud("/home/biosensing/catkin_ws/src/mmp30_gazebo/pcd/20191216/nod/545713000.pcd")
-        print(pcd)
+        pcd = o3d.io.read_point_cloud("/home/biosensing/Desktop/pcd/20191216/nod/545713000.pcd")
+        # print(pcd)
         # print(np.asarray(pcd.points))
         o3d.visualization.draw_geometries([pcd])
 
