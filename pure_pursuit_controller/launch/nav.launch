@@ -1,0 +1,5 @@
+<launch>
+	<node name="pure_pursuit_controller" pkg="pure_pursuit_controller" type="pure_pursuit_controller" output="screen">
+		<rosparam command="load" file="$(find pure_pursuit_controller)/param/nav.yaml"/>
+	</node>
+</launch>

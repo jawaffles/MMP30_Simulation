@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+# license removed for brevity
+import pure_pursuit_controller.pure_pursuit_controller
+if __name__ == '__main__':
+	pure_pursuit_controller.pure_pursuit_controller.pure_pursuit_controller()
