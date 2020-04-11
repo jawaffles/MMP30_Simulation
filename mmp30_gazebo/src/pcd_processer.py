@@ -71,6 +71,9 @@ def vel_corr(heading_err,row_dist_err):
         velocity_publisher.publish(vel_msg)   
 
 
+
+
+
 def callback(point_cloud):
     # rospy.wait_for_service('row_angle')
     #     try:
@@ -103,10 +106,6 @@ def callback(point_cloud):
     print("Left row distance: {}").format(row_output[2])
     
     vel_corr(heading_err,row_dist_err)
-
-
-
-    
 
 def lidar():
     rospy.init_node('lidar_listener', anonymous=True)
