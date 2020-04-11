@@ -34,7 +34,6 @@ class NavMaster:
         self.rospack = rospkg.RosPack()
         self.waypointCSV_Path = self.rospack.get_path('simple_navigation_goals') + '/nav_master_waypoints/waypoints.csv'
         self.waypoints = pd.read_csv(self.waypointCSV_Path)
-        # print(self.waypoints)
 
         # "Current waypoint that is being navigated towards"
         self.goal = 0
@@ -78,21 +77,26 @@ class NavMaster:
 
         dist2waypoint = sqrt((goal_posex - current_posex)**2+(goal_posey - current_posey)**2)
 
-        if dist2waypoint < 2 and self.goal_status == 2:
+        if dist2waypoint < 1.5 and self.goal_status == 2:
             self.sendGoal(self.goal)
-            time.sleep(5)
             self.goal_status = 1
         elif self.goal_status == 1:
-            print("Auto Navigating Now")
+            print("Auto Navigating Now still {} away".format(dist2waypoint))
+            print("Current Goal is now {}".format(self.goal))
+            time.sleep(10)
         elif self.goal_status == 2:
             print("Should be LiDAR naving still {} away".format(dist2waypoint))
+            print("Current Goal is now {}".format(self.goal))
 
     def statusCallback(self,status):
         if len(status.status_list) != 0 : #checks if array is not empty
             if self.goal_status == 1 and status.status_list[0].status == 3:
                 self.goal_status = 2
                 self.goal += 1
-
+                print("Current Goal is now {}".format(self.goal))
+                if self.goal == len(self.waypoints.index):
+                    print("ALL WAYPOINTS ACHIEVED")
+                    rospy.signal_shutdown("Nav compelte shutdown")
         # nav_status = status.status_list
         # print(len(nav_status))
         # print(nav_status)
@@ -102,7 +106,11 @@ class NavMaster:
             xyz_array = ros_numpy.point_cloud2.pointcloud2_to_xyz_array(point_cloud)
             pcd = o3d.geometry.PointCloud()
             pcd.points = o3d.utility.Vector3dVector(xyz_array)
-            row_output = pcd_row_detection(pcd)
+            try:
+                row_output = pcd_row_detection(pcd)
+            except:
+                row_output = [0,0,0]
+                print("No point cloud detectioning, just going forward")
             heading_err = row_output[0]
             row_dist_err = row_output[1] - row_output[2]
             print("Heading Error: {}").format(row_output[0])
@@ -122,7 +130,7 @@ class NavMaster:
         vel_msg.angular.y = 0
         vel_msg.angular.z = 0
 
-        vel_time = 1.5
+        vel_time = 2
         dist_corr = 0
         heading_corr = 0
         prop_head = 1.5
@@ -138,7 +146,7 @@ class NavMaster:
             print("Everything is fine going forward")
             dist_corr = 0
             heading_corr = 0
-            # vel_msg.linear.x = .3
+            vel_time =.25
 
         print("Complete Correction {}").format(dist_corr + heading_corr)
 
