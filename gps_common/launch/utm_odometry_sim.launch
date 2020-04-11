@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+
+ 	<node pkg="tf" type="static_transform_publisher" name="utm_map_broadcaster" args="0 0 0 0 0 0 utm_relative map 100" />
+
+
+    <node pkg="gps_common" type="utm_odometry_node" name="utm_odometry" output="screen">
+    <param name="frame_id" value="utm"/>
+    <param name="child_frame_id" value="map"/>
+    <param name="relative_utm" value="true"/>
+    <remap from="fix" to="navsat/fix"/>
+    </node>
+
+</launch>

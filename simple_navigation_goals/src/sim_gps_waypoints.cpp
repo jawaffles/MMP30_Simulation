@@ -22,33 +22,45 @@
 #include <gps_common/conversions.h>
 #include <nav_msgs/Odometry.h>
 
+#include <iostream>
+#include <fstream>
 
 
 // initialize variables
-  typedef actionlib::SimpleActionClient <move_base_msgs::MoveBaseAction>
-  MoveBaseClient; //create a type definition for a client called MoveBaseClient
+    typedef actionlib::SimpleActionClient <move_base_msgs::MoveBaseAction>
+    MoveBaseClient; //create a type definition for a client called MoveBaseClient
 
-  std::vector <std::pair<double, double> > waypointVect;
-  std::vector<std::pair < double, double> > ::iterator iter; //init. iterator
-  geometry_msgs::PointStamped UTM_point, map_point, UTM_next, map_next;
-  
-  
-  geometry_msgs::PoseArray poseArray;  
+    std::vector <std::pair<double, double> > waypointVect;
+    std::vector<std::pair < double, double> > ::iterator iter; //init. iterator
+    geometry_msgs::PointStamped UTM_point, map_point, UTM_next, map_next;
 
 
-  int count = 0, waypointCount = 0, wait_count = 0;
-  double numWaypoints = 0;
-  double latiGoal, longiGoal, latiNext, longiNext;
-  std::string utm_zone;
-  std::string path_local, path_abs, coordinates_files;
+    geometry_msgs::PoseArray poseArray;  
+
+
+    int count = 0, waypointCount = 0, wait_count = 0;
+    double numWaypoints = 0;
+    double latiGoal, longiGoal, latiNext, longiNext;
+    std::string utm_zone;
+    std::string path_local, path_abs, coordinates_files;
+
+    std::ofstream waypointsCSV;
+    std::string CSVpath = ros::package::getPath("simple_navigation_goals") + "/nav_master_waypoints/waypoints.csv";
+
+    waypointsCSV.open(CSVpath, std::ios_base::app);
+    waypointsCSV <<"X" << ","
+                << "Y" << ","
+                << "Z"<< ","
+                << "THETAX"<< ","
+                << "THETAY"  << ","
+                << "THETAZ" << ","
+                << "QUATW"  << std::endl;
+                
+    waypointsCSV.close();
+
+
 
 //
-
-
-
-
-
-
 
 
 int countWaypointsInFile(std::string path_local)
@@ -229,10 +241,8 @@ geometry_msgs::PoseArray pubArray(move_base_msgs::MoveBaseGoal goal, ros::Publis
 
     //poseArray.poses.clear();
     poseArray.header.stamp = ros::Time::now();
-    poseArray.header.frame_id = "base_link";
+    poseArray.header.frame_id = "utm_relative";
 
-    
-    
     pose.pose.position.x = goal.target_pose.pose.position.x;
     pose.pose.position.y = goal.target_pose.pose.position.y;    
     pose.pose.position.z = goal.target_pose.pose.position.z;
@@ -249,75 +259,74 @@ geometry_msgs::PoseArray pubArray(move_base_msgs::MoveBaseGoal goal, ros::Publis
 
     ROS_INFO("Array Arrow Published! ");
 
+    std::cout << CSVpath;
+    waypointsCSV.open(CSVpath, std::ios_base::app);
+    waypointsCSV << pose.pose.position.x << ","
+                << pose.pose.position.y << ","
+                << pose.pose.position.z << ","
+                << pose.pose.orientation.x << ","
+                << pose.pose.orientation.y << ","
+                << pose.pose.orientation.z << ","
+                << pose.pose.orientation.w << "," << std::endl;
+                
+    waypointsCSV.close();
+
+
     return poseArray;
     
 }
 
 
-
-
-
-
-
 int main(int argc, char** argv)
 {
 
-  ros::init(argc, argv, "gps_waypoint"); //initiate node called gps_waypoint
-      ros::NodeHandle n;
-      ROS_INFO("Initiated gps_waypoint node");
-      
-      //construct an action client that we use to communication with the action named move_base.
-      //Setting true is telling the constructor to start ros::spin()
-      // ros::spin() lets all callbacks get called for subscriber, causes code to loop 
-      // continously instead of ending at the end of main()
-      MoveBaseClient ac("/move_base", true);
+    ros::init(argc, argv, "gps_waypoint"); //initiate node called gps_waypoint
+    ros::NodeHandle n;
+    ROS_INFO("Initiated gps_waypoint node");
 
+    //construct an action client that we use to communication with the action named move_base.
+    //Setting true is telling the constructor to start ros::spin()
+    // ros::spin() lets all callbacks get called for subscriber, causes code to loop 
+    // continously instead of ending at the end of main()
+    MoveBaseClient ac("/move_base", true);
 
-      // Initiate publisher to send end of node message
-      ros::Publisher pubWaypointNodeEnded = n.advertise<std_msgs::Bool>("/simple_navigation_goals/waypoint_following_status", 100);
+    // Initiate publisher to send end of node message
+    ros::Publisher pubWaypointNodeEnded = n.advertise<std_msgs::Bool>("/simple_navigation_goals/waypoint_following_status", 100);
 
-
-
-      //wait for the action server to come up
-      while(!ac.waitForServer(ros::Duration(5.0)))
-      {
-          wait_count++;
-          if(wait_count > 3)
-          {
-              ROS_ERROR("move_base action server did not come up, killing gps_waypoint node...");
-              // Notify joy_launch_control that waypoint following is complete
-              std_msgs::Bool node_ended;
-              node_ended.data = true;
-              pubWaypointNodeEnded.publish(node_ended);
-              ros::shutdown();
-          }
-          ROS_INFO("Waiting for the move_base action server to come up");
-      }
-  //   
+    //wait for the action server to come up
+    while(!ac.waitForServer(ros::Duration(5.0)))
+    {
+        wait_count++;
+        if(wait_count > 3)
+        {
+            ROS_ERROR("move_base action server did not come up, killing gps_waypoint node...");
+            // Notify joy_launch_control that waypoint following is complete
+            std_msgs::Bool node_ended;
+            node_ended.data = true;
+            pubWaypointNodeEnded.publish(node_ended);
+            ros::shutdown();
+        }
+        ROS_INFO("Waiting for the move_base action server to come up");
+    }
   
     ros::Publisher poseArrayPub = n.advertise<geometry_msgs::PoseArray>("array",1000);
-  
-  //Count how many waypoints are in txt file
-  std::string path_local = "/coordinates_files.txt" ;
-  numWaypoints = countWaypointsInFile(path_local);
-    
+
+    //Count how many waypoints are in txt file
+    std::string path_local = "/coordinates_files.txt" ;
+    numWaypoints = countWaypointsInFile(path_local);
+
 
     //Was not able get ros::param::get() to work in such that it outputs the file path to desired file.
     //ros::param::get("/coordinates_file",coordinates_files);
     //std::string path_abs =  ros::package::getPath("simple_navigation_goals") + path_local ;	
     //ROS_INFO("Saving coordinates to: %s", path_abs.c_str());
-  //
+    //
+
+    //Iterate through waypoints in text file and output to console
+    waypointVect = getWaypoints(path_local);
 
 
-
-  //Iterate through waypoints in text file and output to console
-  waypointVect = getWaypoints(path_local);
-
-
-
-
-/*
-//Iterate through vector of waypoints to publish waypoint arrows for RVIZ visualization
+    //Iterate through vector of waypoints to publish waypoint arrows for RVIZ visualization
   
     for(iter = waypointVect.begin(); iter < waypointVect.end(); iter++)
         {
@@ -345,7 +354,6 @@ int main(int argc, char** argv)
             }
             // ^ Waypoint Values Set
 
-
             //Declare/Output what values were received for Lat/Long
             //ROS_INFO("Received Latitude goal:%.8f", latiGoal);
             //ROS_INFO("Received Longitude goal:%.8f", longiGoal);
@@ -355,21 +363,14 @@ int main(int argc, char** argv)
             UTM_next = latlongtoUTM(latiNext, longiNext);
             // ROS_INFO("Current UTM POINT GOAL : %f , %f" , UTM_point.point.x,UTM_point.point.y );
 
-
             //Transform UTM to map point in odom frame
             map_point = UTMtoMapPoint(UTM_point);
             map_next = UTMtoMapPoint(UTM_next);
 
-            //ROS_INFO("TEST TEST TEST");
-
             ROS_INFO( " Latitude/Longitude : %f , %f \n  UTM: %f,%f  \n Odom: %f, %f", latiGoal, longiGoal ,UTM_point.point.x,UTM_point.point.y, map_point.point.x,map_point.point.y );
-
 
             //Build goal to send to move_base //initiate a move_base_msg called goal
             move_base_msgs::MoveBaseGoal goal = buildGoal(map_point, map_next, final_point); 
-
-            
-
 
             //Publish Array of goals
             poseArray = pubArray(goal,poseArrayPub);
@@ -377,109 +378,105 @@ int main(int argc, char** argv)
         }
 
 
+    ROS_INFO("All Array Arrows Have Published! Will now begin autonomous navigation");
+
+    //------------------------------------------------------------------------------
 
 
-// --------------------------------------------------------------------------
-
-
-ROS_INFO("All Array Arrows Have Published! Will now begin autonomous navigation");
-*/
-
-
-
-//Iterate through vector of waypoints for setting goals
-  
-    for(iter = waypointVect.begin(); iter < waypointVect.end(); iter++)
-        {
-            //Setting Goals based on place in waypoint file
-            latiGoal = iter->first;
-            longiGoal = iter->second;
-
-            // Final point Bool initialization 
-            bool final_point = false;
-
-            //Setting next goal point if not at last waypoint
-            if(iter < (waypointVect.end() - 1))
+    /*
+    //Iterate through vector of waypoints for setting goals
+    
+        for(iter = waypointVect.begin(); iter < waypointVect.end(); iter++)
             {
-                //Temporarily sets iter forward to get next waypoint
-                iter++;
-                latiNext = iter->first;
-                longiNext = iter->second;
-                iter--;
-            }
-            else //set to current if it is the last point
-            {
-                latiNext = iter->first;
-                longiNext = iter->second;
-                final_point = true;
-            }
-            // ^ Waypoint Values Set
+                //Setting Goals based on place in waypoint file
+                latiGoal = iter->first;
+                longiGoal = iter->second;
+
+                // Final point Bool initialization 
+                bool final_point = false;
+
+                //Setting next goal point if not at last waypoint
+                if(iter < (waypointVect.end() - 1))
+                {
+                    //Temporarily sets iter forward to get next waypoint
+                    iter++;
+                    latiNext = iter->first;
+                    longiNext = iter->second;
+                    iter--;
+                }
+                else //set to current if it is the last point
+                {
+                    latiNext = iter->first;
+                    longiNext = iter->second;
+                    final_point = true;
+                }
+                // ^ Waypoint Values Set
 
 
-            //Declare/Output what values were received for Lat/Long
-            //ROS_INFO("Received Latitude goal:%.8f", latiGoal);
-            //ROS_INFO("Received Longitude goal:%.8f", longiGoal);
+                //Declare/Output what values were received for Lat/Long
+                //ROS_INFO("Received Latitude goal:%.8f", latiGoal);
+                //ROS_INFO("Received Longitude goal:%.8f", longiGoal);
 
-            //Convert lat/long into UTM
-            UTM_point = latlongtoUTM(latiGoal, longiGoal);
-            UTM_next = latlongtoUTM(latiNext, longiNext);
-            // ROS_INFO("Current UTM POINT GOAL : %f , %f" , UTM_point.point.x,UTM_point.point.y );
-
-
-            //Transform UTM to map point in odom frame
-            map_point = UTMtoMapPoint(UTM_point);
-            map_next = UTMtoMapPoint(UTM_next);
-
-            //ROS_INFO("TEST TEST TEST");
-
-            ROS_INFO( " Latitude/Longitude : %f , %f \n  UTM: %f,%f  \n Odom: %f, %f", latiGoal, longiGoal ,UTM_point.point.x,UTM_point.point.y, map_point.point.x,map_point.point.y );
+                //Convert lat/long into UTM
+                UTM_point = latlongtoUTM(latiGoal, longiGoal);
+                UTM_next = latlongtoUTM(latiNext, longiNext);
+                // ROS_INFO("Current UTM POINT GOAL : %f , %f" , UTM_point.point.x,UTM_point.point.y );
 
 
-            //Build goal to send to move_base //initiate a move_base_msg called goal
-            move_base_msgs::MoveBaseGoal goal = buildGoal(map_point, map_next, final_point); 
-        
+                //Transform UTM to map point in odom frame
+                map_point = UTMtoMapPoint(UTM_point);
+                map_next = UTMtoMapPoint(UTM_next);
 
-            // Send Goal
-            ROS_INFO("Sending goal");
-            ac.sendGoal(goal); //push goal to move_base node
+                //ROS_INFO("TEST TEST TEST");
 
-            //Wait for result
-            ac.waitForResult(); //waiting to see if move_base was able to reach goal
-
-            if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
-            {
-                ROS_INFO("mmp_30 has reached its goal!");
-                //switch to next waypoint and repeat
-            }
-            else
-            {
-                ROS_ERROR("mmp_30 was unable to reach its goal. GPS Waypoint unreachable.");
-                ROS_INFO("Exiting node...");
-                // Notify joy_launch_control that waypoint following is complete
-                std_msgs::Bool node_ended;
-                node_ended.data = true;
-                pubWaypointNodeEnded.publish(node_ended);
-                ros::shutdown();
-            }
-        } // End for loop iterating through waypoint vector
-
-  
-  
-  ROS_INFO("mmp30 has reached all of its goals!!!\n");
-  ROS_INFO("Ending node...");
-
-  // Notify joy_launch_control that waypoint following is complete
-  std_msgs::Bool node_ended;
-  node_ended.data = true;
-  pubWaypointNodeEnded.publish(node_ended);
+                ROS_INFO( " Latitude/Longitude : %f , %f \n  UTM: %f,%f  \n Odom: %f, %f", latiGoal, longiGoal ,UTM_point.point.x,UTM_point.point.y, map_point.point.x,map_point.point.y );
 
 
-ROS_INFO("End of script");
+                //Build goal to send to move_base //initiate a move_base_msg called goal
+                move_base_msgs::MoveBaseGoal goal = buildGoal(map_point, map_next, final_point); 
+            
+
+                // Send Goal
+                ROS_INFO("Sending goal");
+                ac.sendGoal(goal); //push goal to move_base node
+
+                //Wait for result
+                ac.waitForResult(); //waiting to see if move_base was able to reach goal
+
+                if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+                {
+                    ROS_INFO("mmp_30 has reached its goal!");
+                    //switch to next waypoint and repeat
+                }
+                else
+                {
+                    ROS_ERROR("mmp_30 was unable to reach its goal. GPS Waypoint unreachable.");
+                    ROS_INFO("Exiting node...");
+                    // Notify joy_launch_control that waypoint following is complete
+                    std_msgs::Bool node_ended;
+                    node_ended.data = true;
+                    pubWaypointNodeEnded.publish(node_ended);
+                    ros::shutdown();
+                }
+            } // End for loop iterating through waypoint vector
+
+    
+    
+        ROS_INFO("mmp30 has reached all of its goals!!!\n");
+        ROS_INFO("Ending node...");
+
+        // Notify joy_launch_control that waypoint following is complete
+        std_msgs::Bool node_ended;
+        node_ended.data = true;
+        pubWaypointNodeEnded.publish(node_ended);
+    */
+
+    ROS_INFO("End of script");
 
 
-  ros::shutdown();
-  ros::spin();
-  return 0;
+    ros::shutdown();
+    ros::spin();
+    return 0;
 
 
 

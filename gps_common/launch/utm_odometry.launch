@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="gps_common" type="utm_odometry_node" name="utm_odometry" output="screen">
+    <param name="frame_id" value="utm"/>
+    <param name="child_frame_id" value="gps_link"/>
+    <param name="relative_utm" value="true"/>
+    </node>
+
+    
+    <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="nmea_serial_driver" output="screen">
+        <param name="port" value="/dev/ttyUSB2"/>
+        <param name="baud" value="115200"/>
+        <param name="frame_id" value="gps"/>
+    </node>
+</launch>

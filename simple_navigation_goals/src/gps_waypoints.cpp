@@ -254,10 +254,6 @@ geometry_msgs::PoseArray pubArray(move_base_msgs::MoveBaseGoal goal, ros::Publis
 
 
 
-
-
-
-
 int main(int argc, char** argv)
 {
 
@@ -271,11 +267,8 @@ int main(int argc, char** argv)
       // continously instead of ending at the end of main()
       MoveBaseClient ac("/move_base", true);
 
-
       // Initiate publisher to send end of node message
       ros::Publisher pubWaypointNodeEnded = n.advertise<std_msgs::Bool>("/simple_navigation_goals/waypoint_following_status", 100);
-
-
 
       //wait for the action server to come up
       while(!ac.waitForServer(ros::Duration(5.0)))
@@ -473,7 +466,9 @@ ROS_INFO("All Array Arrows Have Published! Will now begin autonomous navigation"
   pubWaypointNodeEnded.publish(node_ended);
 
 
-ROS_INFO("End of script");
+
+
+ ROS_INFO("End of script");
 
 
   ros::shutdown();
