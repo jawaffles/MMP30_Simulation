@@ -9,11 +9,11 @@
         
     <xacro:arg name="gpu" default="false"/>
   <xacro:property name="gpu" value="$(arg gpu)" />
-
+<!-- 
    <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
   <VLP-16 parent="base_link" name="velodyne" topic="/velodyne_points" hz="10" samples="440" gpu="${gpu}">
     <origin xyz=".1 0 .5" rpy="0 0 3.14159" />
-  </VLP-16>
+  </VLP-16> -->
 
   <!-- <joint name="arm_rover_joint" type="fixed">
   <origin xyz="0 -.1 .07" rpy="0 0 ${180 * (M_PI /180)}" />
