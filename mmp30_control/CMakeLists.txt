@@ -23,12 +23,12 @@ catkin_package(
 include_directories(${catkin_INCLUDE_DIRS})
 
 
-add_executable(calibrate_heading src/calibrate_heading.cpp)
-target_link_libraries(calibrate_heading ${catkin_LIBRARIES})
 
-add_executable(calibrate_heading_sim src/calibrate_heading_sim.cpp)
-target_link_libraries(calibrate_heading_sim ${catkin_LIBRARIES})
 
-add_executable(calibrate_heading_indoor src/calibrate_heading_indoor.cpp)
-target_link_libraries(calibrate_heading_indoor ${catkin_LIBRARIES})
+
+
+
+
+
+
 

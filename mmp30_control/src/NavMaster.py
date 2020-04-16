@@ -83,7 +83,7 @@ class NavMaster:
         elif self.goal_status == 1:
             print("Auto Navigating Now still {} away".format(dist2waypoint))
             print("Current Goal is now {}".format(self.goal))
-            time.sleep(10)
+            time.sleep(5)
         elif self.goal_status == 2:
             print("Should be LiDAR naving still {} away".format(dist2waypoint))
             print("Current Goal is now {}".format(self.goal))

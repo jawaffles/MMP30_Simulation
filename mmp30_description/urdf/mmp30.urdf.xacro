@@ -12,7 +12,7 @@
 
    <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
   <VLP-16 parent="base_link" name="velodyne" topic="/velodyne_points" hz="10" samples="440" gpu="${gpu}">
-    <origin xyz="0 0 0.25" rpy="0 0 3.14159" />
+    <origin xyz=".1 0 .5" rpy="0 0 3.14159" />
   </VLP-16>
 
   <!-- <joint name="arm_rover_joint" type="fixed">
@@ -52,9 +52,9 @@
   <!-- Base link is the center of the robot's bottom plate -->
   <link name="base_link">
     <visual>
-      <origin xyz="${base_x_size * -.5} ${base_y_size * -.5} 0" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-          <mesh filename="package://mmp30_description/meshes/MMP30.dae"/>
+          <mesh filename="package://MMp30-Main-assembly/meshes/FinalRobotURDF/Body.stl" scale="0.001 0.001 0.001"  />
       </geometry>
     </visual>
     <collision>
@@ -145,13 +145,8 @@
       rpy= "0 0 0"/>
     <geometry>
       <mesh
-        filename="package://MMp30-Main-assembly/meshes/SensorBaseChassis.STL" />
+        filename="package://MMp30-Main-assembly/meshes/FinalRobotURDF/Mainassembly.stl"  scale="0.001 0.001 0.001"  />
     </geometry>
-    <material
-      name="">
-      <color
-        rgba="0.79216 0.81961 0.93333 1" />
-    </material>
   </visual>
 
 </link>
@@ -161,12 +156,60 @@
   name="Chassis_Joint"
   type="fixed">
   <origin
-    xyz="-.1 .80 -.175"
-    rpy="${(M_PI/180) * 10} ${(M_PI/180) * 153} ${(M_PI/180) * 53} " />
+    xyz="0 0 .05"
+    rpy="${(M_PI/180) * 0} ${(M_PI/180) * 0} ${(M_PI/180) * 0 } " />
   <parent
     link="base_link" />
   <child
     link="SensorBaseChassis" />
+  <axis
+    xyz="0 0 0" />
+  <safety_controller
+    k_velocity="0" />
+</joint>
+
+  <gazebo reference="SensorBaseChassis">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+
+<link
+  name="GPS">
+  <inertial>
+    <origin
+      rpy="0 0 0" />
+    <mass
+      value="1.7565" />
+    <inertia
+      ixx="0.046345"
+      ixy="-0.00014939"
+      ixz="1.1248E-08"
+      iyy="0.042797"
+      iyz="5.3201E-07"
+      izz="0.055575" />
+  </inertial>
+  <visual>
+    <origin
+      xyz="0 0 0"
+      rpy= "0 0 0"/>
+    <geometry>
+      <mesh
+        filename="package://MMp30-Main-assembly/meshes/FinalRobotURDF/GPS_Mount_Assembly_MMP30.stl"  scale="0.001 0.001 0.001"  />
+    </geometry>
+  </visual>
+
+</link>
+
+<joint
+  name="GPS_Joint"
+  type="fixed">
+  <origin
+    xyz="0 0 .1"
+    rpy="${(M_PI/180) * 0} ${(M_PI/180) * 0} ${(M_PI/180) * 0 } " />
+  <parent
+    link="base_link" />
+  <child
+    link="GPS" />
   <axis
     xyz="0 0 0" />
   <safety_controller
@@ -188,7 +231,7 @@
   <visual>
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <geometry>
-  <box size=".01 .01 .1"/>
+  <box size=".0001 .0001 .00001"/>
     </geometry>
     <material name="grey"/>
   </visual>
@@ -203,7 +246,7 @@
 
 <!-- Nod joint -->
 <joint name="nod_joint" type="continuous">
-  <origin xyz=".01 0 0" rpy="0 ${(M_PI/180) * 0} ${(M_PI/180) * 0}"/>
+  <origin xyz=".01 0 -.025" rpy="0 ${(M_PI/180) * 0} ${(M_PI/180) * 0}"/>
   <parent link="nod_link"/>
   <axis xyz="0 1 0" />
   <child link="hokuyo_link"/>
@@ -231,7 +274,7 @@
 
 <!-- Hokuyo joint -->
 <joint name="hokuyo_joint" type="prismatic">
-  <origin xyz=".05 0 1.2" rpy="${(M_PI/180) * 0} ${(M_PI/180) * 0} ${(M_PI/180) * 0}"/> 
+  <origin xyz=".05 0 1.15" rpy="${(M_PI/180) * 0} ${(M_PI/180) * 0} ${(M_PI/180) * 0}"/> 
   <parent link="base_link"/>
   <axis xyz="0 0 1" />
   <child link="nod_link"/>
@@ -312,20 +355,12 @@
 
  
 
-
-
-
-
-
-
-
-
 <xacro:property name="camera_link" value="0.05" /> <!-- Size of square 'camera' box -->
 
 
 <joint name="camera_joint" type="fixed">
   <axis xyz="0 1 0" />
-  <origin xyz="0 0 1.0" rpy="0 ${(M_PI/180) * 40} ${(M_PI/180) * 0}"/>
+  <origin xyz=".1 0 1.0" rpy="0 ${(M_PI/180) * 30} ${(M_PI/180) * 0}"/>
   <parent link="base_link"/>
   <child link="camera_link"/>
 </joint>
@@ -346,9 +381,8 @@
   <visual>
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <geometry>
-  <box size="${camera_link} ${camera_link} ${camera_link}"/>
+      <mesh filename="package://mmp30_description/meshes/kinect.dae"/>
     </geometry>
-    <material name="grey"/>
   </visual>
 
   <inertial>
@@ -358,9 +392,7 @@
   </inertial>
 </link>
 
-  <gazebo reference="camera_link">
-    <material>Gazebo/DarkGrey</material>
-  </gazebo>
+
 
 
 </xacro:macro>
