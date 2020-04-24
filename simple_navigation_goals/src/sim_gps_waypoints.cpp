@@ -47,16 +47,16 @@
     std::ofstream waypointsCSV;
     std::string CSVpath = ros::package::getPath("simple_navigation_goals") + "/nav_master_waypoints/waypoints.csv";
 
-    waypointsCSV.open(CSVpath, std::ios_base::app);
-    waypointsCSV <<"X" << ","
-                << "Y" << ","
-                << "Z"<< ","
-                << "THETAX"<< ","
-                << "THETAY"  << ","
-                << "THETAZ" << ","
-                << "QUATW"  << std::endl;
+    // waypointsCSV.open(CSVpath, std::ios_base::app);
+    // waypointsCSV <<"X" << ","
+    //             << "Y" << ","
+    //             << "Z"<< ","
+    //             << "THETAX"<< ","
+    //             << "THETAY"  << ","
+    //             << "THETAZ" << ","
+    //             << "QUATW"  << std::endl;
                 
-    waypointsCSV.close();
+    // waypointsCSV.close();
 
 
 
@@ -259,17 +259,17 @@ geometry_msgs::PoseArray pubArray(move_base_msgs::MoveBaseGoal goal, ros::Publis
 
     ROS_INFO("Array Arrow Published! ");
 
-    std::cout << CSVpath;
-    waypointsCSV.open(CSVpath, std::ios_base::app);
-    waypointsCSV << pose.pose.position.x << ","
-                << pose.pose.position.y << ","
-                << pose.pose.position.z << ","
-                << pose.pose.orientation.x << ","
-                << pose.pose.orientation.y << ","
-                << pose.pose.orientation.z << ","
-                << pose.pose.orientation.w << "," << std::endl;
+    // std::cout << CSVpath;
+    // waypointsCSV.open(CSVpath, std::ios_base::app);
+    // waypointsCSV << pose.pose.position.x << ","
+    //             << pose.pose.position.y << ","
+    //             << pose.pose.position.z << ","
+    //             << pose.pose.orientation.x << ","
+    //             << pose.pose.orientation.y << ","
+    //             << pose.pose.orientation.z << ","
+    //             << pose.pose.orientation.w << "," << std::endl;
                 
-    waypointsCSV.close();
+    // waypointsCSV.close();
 
 
     return poseArray;

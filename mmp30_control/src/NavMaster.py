@@ -130,10 +130,10 @@ class NavMaster:
         vel_msg.angular.y = 0
         vel_msg.angular.z = 0
 
-        vel_time = 2
+        vel_time = 1.5
         dist_corr = 0
         heading_corr = 0
-        prop_head = 1.5
+        prop_head = 1.0
         prop_dist = .5
 
         if abs(row_dist_err) > .2:

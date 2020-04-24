@@ -6,8 +6,8 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /Odometry2
-        - /PointCloud22
+        - /RobotModel1
+        - /PointCloud21
       Splitter Ratio: 0.5
     Tree Height: 756
   - Class: rviz/Selection
@@ -63,6 +63,11 @@ Visualization Manager:
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
+        GPS:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         Link Tree Style: Links in Alphabetic Order
         SensorBaseChassis:
           Alpha: 1
@@ -117,16 +122,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         rear_right_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        velodyne:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        velodyne_base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -459,46 +454,16 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 10
-        Min Value: -10
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz/PointCloud2
-      Color: 255; 255; 255
-      Color Transformer: Intensity
-      Decay Time: 0
-      Enabled: false
-      Invert Rainbow: false
-      Max Color: 255; 255; 255
-      Max Intensity: 0
-      Min Color: 0; 0; 0
-      Min Intensity: 0
-      Name: PointCloud2
-      Position Transformer: XYZ
-      Queue Size: 10
-      Selectable: true
-      Size (Pixels): 3
-      Size (m): 0.009999999776482582
-      Style: Flat Squares
-      Topic: /velodyne_points
-      Unreliable: false
-      Use Fixed Frame: true
-      Use rainbow: true
-      Value: false
-    - Alpha: 1
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 0.871455729007721
-        Min Value: -0.10463155806064606
+        Max Value: 0.6891031265258789
+        Min Value: -0.10658301413059235
         Value: true
       Axis: Z
       Channel Name: intensity
       Class: rviz/LaserScan
       Color: 255; 255; 255
       Color Transformer: AxisColor
-      Decay Time: 200
-      Enabled: false
+      Decay Time: 7
+      Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 0
@@ -515,7 +480,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: false
+      Value: true
     - Angle Tolerance: 0.10000000149011612
       Class: rviz/Odometry
       Covariance:
@@ -550,11 +515,11 @@ Visualization Manager:
       Topic: /odometry/filtered
       Unreliable: false
       Value: true
-    - Alpha: 0.5
+    - Alpha: 0
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 1.0975940227508545
-        Min Value: -0.13957028090953827
+        Max Value: 0.7689247131347656
+        Min Value: -0.11763415485620499
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -572,9 +537,9 @@ Visualization Manager:
       Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
-      Size (Pixels): 3
+      Size (Pixels): 1
       Size (m): 0.009999999776482582
-      Style: Flat Squares
+      Style: Points
       Topic: /assembled_cloud2
       Unreliable: false
       Use Fixed Frame: true
@@ -605,7 +570,7 @@ Visualization Manager:
       Value: true
   Enabled: true
   Global Options:
-    Background Color: 48; 48; 48
+    Background Color: 46; 52; 54
     Default Light: true
     Fixed Frame: map
     Frame Rate: 30
@@ -629,25 +594,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 15.459339141845703
+      Distance: 6.255229473114014
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.7265288233757019
-        Y: 3.5304977893829346
-        Z: -1.3987607955932617
+        X: -0.42170801758766174
+        Y: 1.580461859703064
+        Z: 1.3620491027832031
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.904796838760376
+      Pitch: 0.9497964382171631
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.6420857906341553
+      Yaw: 5.09026575088501
     Saved: ~
 Window Geometry:
   Displays:
