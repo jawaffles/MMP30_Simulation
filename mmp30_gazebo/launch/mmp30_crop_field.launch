@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+
+
+
+
+<launch>
+<node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0 0 0 0 1 camera_link camera_depth_optical_frame 100" />
+
+
+ 
+  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <include file="$(find mmp30_gazebo)/launch/mmp30_empty_world.launch">
+    <arg name="world_name" value="$(find mmp30_gazebo)/worlds/simple_field.world "/>
+    
+  </include>
+
+</launch>

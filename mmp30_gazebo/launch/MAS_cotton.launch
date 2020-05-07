@@ -6,19 +6,59 @@
 
 <launch>
  
-  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
-  <include file="$(find mmp30_gazebo)/launch/mmp30_empty_world.launch">
-    <arg name="world_name" value="$(find mmp30_gazebo)/worlds/cotton_field_j.world"/>
-    
+
+
+
+
+  <!-- <include file="$(find mmp30_gazebo)/launch/mmp30_empty_world.launch"> -->
+  <!-- <arg name="world_name" value="$(find mmp30_gazebo)/worlds/cotton_field_j.world"/> -->
+  <!-- </include> -->
+
+  <arg name="world_name" default="worlds/empty.world"/>
+
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world_name)"/> <!-- world_name is wrt GAZEBO_RESOURCE_PATH environment variable -->
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
   </include>
 
 
+
+<group ns="husky">
   <include file="$(find husky_gazebo)/launch/spawn_husky.launch">
-      <arg name="robot_namespace" value="husky"/>
+      <!-- <arg name="robot_namespace" value="husky"/> -->
   </include>
 
+  <include file="$(find husky_navigation)/launch/move_base.launch">
+    <arg name="no_static_map" value="true"/>
+  </include>
+</group>
 
-  <group ns="quadcopter">
+
+<group ns="husky2">
+  <include file="$(find husky_gazebo)/launch/spawn_husky.launch">
+      <!-- <arg name="robot_namespace" value="husky"/> -->
+  </include>
+
+  <include file="$(find husky_navigation)/launch/move_base.launch">
+    <arg name="no_static_map" value="true"/>
+  </include>
+</group>
+
+
+
+  <!-- <include file="$(find mmp30_gazebo)/launch/spawn_mmp30.launch">
+  </include> -->
+  
+
+
+
+
+  <!-- <group ns="quadcopter">
 
    <arg name="name" default="quadrotor"/>
    <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
@@ -43,7 +83,7 @@
      <arg name="use_pose_estimation" value="$(arg use_pose_estimation)"/>
    </include>
 
-  </group>
+  </group> -->
 
 
 </launch>
