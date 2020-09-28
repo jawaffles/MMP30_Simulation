@@ -2,7 +2,7 @@
 **Install following packages**
 ```
 sudo apt-get install ros-melodic-laser-assembler
-sudo apt-get install ros-melodic-ros-numy
+sudo apt-get install ros-melodic-ros-numpy
 
 pip install open3d
 pip install sklearn
